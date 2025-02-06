@@ -1,24 +1,24 @@
 `timescale 1ns/1ps
 
-`define NEIGHBOURS_CNT 8 //REVIEW
-
-module next_cell_state (
-    input  logic [`NEIGHBOURS_CNT-1:0]  i_nbrs,
+module next_cell_state #(
+    localparam NEIGHBOURS_CNT = 8
+) (
+    input  logic [NEIGHBOURS_CNT-1:0]   i_nbrs,
     input  logic                        i_cell_state,
 
     output logic                        o_cell_state
 );
 
-logic [$clog2(`NEIGHBOURS_CNT + 1)-1:0] num_alive_nbrs; 
-logic [`NEIGHBOURS_CNT-1:0] tmp_nbrs;
+localparam NUM_NBRS_SIZE = $clog2(NEIGHBOURS_CNT + 1) ;
 
-//assign num_alive_nbrs = ($countones(i_nbrs));
+logic [NUM_NBRS_SIZE-1:0] num_alive_nbrs; 
+logic [NEIGHBOURS_CNT-1:0] tmp_nbrs;
 
 always_comb begin
     tmp_nbrs = i_nbrs;
     num_alive_nbrs = 0;
     while (|tmp_nbrs) begin
-        num_alive_nbrs += ($clog2(`NEIGHBOURS_CNT + 1))'(tmp_nbrs[0]);
+        num_alive_nbrs += (NUM_NBRS_SIZE)'(tmp_nbrs[0]);
         tmp_nbrs >>= 1;
     end
 end
@@ -38,5 +38,3 @@ always_comb begin
 end
 
 endmodule
-
-`undef NEIGHBOURS_CNT
