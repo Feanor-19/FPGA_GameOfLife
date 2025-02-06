@@ -1,7 +1,11 @@
+ifeq ($(MAKECMDGOALS),run)
+
 ifeq ($(M),)
-$(error No file is specified. Please, use 'make *target* M=*your module name*')
+$(error No file is specified. Please, use 'make run M=*your module name*')
 else
 MODULE:=$(M)
+endif
+
 endif
 
 EXECUTABLE := ./obj_dir/V$(MODULE)
@@ -23,10 +27,10 @@ OBJ_DIR := obj_dir
 
 ALL_SRCS := $(SRC) $(TB) $(ASSERTIONS)
 
-.PHONY: run waves test
+.PHONY: run waves info
 
-test:
-	@echo $(MODULE) $(EXECUTABLE) $(SRC) $(TB)
+info:
+	@echo "Please, use 'make run M=*your module name*"
 
 run: $(EXECUTABLE)
 	$(EXECUTABLE) $(EXECUTABLE_FLAGS)

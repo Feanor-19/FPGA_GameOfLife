@@ -2,7 +2,7 @@
 
 `define NEIGHBOURS_CNT 8 //REVIEW
 
-module next_cell_logic (
+module next_cell_state (
     input  logic [`NEIGHBOURS_CNT-1:0]  i_neighbours,
     input  logic                        i_cell_state,
 

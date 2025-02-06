@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module tb_next_cell_logic;
+module tb_next_cell_state;
 
 logic [9-1:0] test_dat;
 
@@ -11,7 +11,7 @@ logic       o_cell_state;
 assign i_neighbours = test_dat[7:0];
 assign i_cell_state = test_dat[8];
 
-next_cell_logic next_cell_logic_inst (
+next_cell_state next_cell_state_inst (
     .i_neighbours   (i_neighbours),
     .i_cell_state   (i_cell_state),
     .o_cell_state   (o_cell_state)
