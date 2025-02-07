@@ -12,7 +12,7 @@ assign i_nbrs = test_dat[7:0];
 assign i_cell_state = test_dat[8];
 
 next_cell_state next_cell_state_inst (
-    .i_nbrs   (i_nbrs),
+    .i_nbrs         (i_nbrs),
     .i_cell_state   (i_cell_state),
     .o_cell_state   (o_cell_state)
 );
