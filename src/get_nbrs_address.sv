@@ -1,8 +1,8 @@
 `timescale 1ns/1ps
 
 module get_nbrs_address #(
-    parameter FIELD_W = 30,
-    parameter FIELD_H = 50,
+    parameter FIELD_W,
+    parameter FIELD_H,
 
     localparam X_ADR_SIZE     = $clog2(FIELD_W),
     localparam Y_ADR_SIZE     = $clog2(FIELD_H),

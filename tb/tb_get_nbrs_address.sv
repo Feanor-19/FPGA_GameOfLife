@@ -15,7 +15,7 @@ logic [X_ADR_SIZE-1:0] o_nbrs_x_adr [NEIGHBOURS_CNT];
 logic [Y_ADR_SIZE-1:0] o_nbrs_y_adr [NEIGHBOURS_CNT];
 logic                  o_nbrs_rlvnt [NEIGHBOURS_CNT];
 
-get_nbrs_address #(FIELD_W, FIELD_H) get_nbrs_address_inst (.*);
+get_nbrs_address #(.FIELD_W(FIELD_W), .FIELD_H(FIELD_H)) get_nbrs_address_inst (.*);
 
 `define ASSERT(EXPR, ERR_MSG) if (!(EXPR)) $error("[FAIL]: ", ERR_MSG)
 

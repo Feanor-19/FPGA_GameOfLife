@@ -1,6 +1,8 @@
+`timescale 1ns/1ps
+
 module field_ram #(
-    parameter FIELD_W = 30,
-    parameter FIELD_H = 50,
+    parameter FIELD_W,
+    parameter FIELD_H,
 
     localparam X_ADR_SIZE     = $clog2(FIELD_W),
     localparam Y_ADR_SIZE     = $clog2(FIELD_H),
@@ -41,7 +43,7 @@ always_comb begin
         o_nbrs[i] = nbrs_rlvnt[i] ? field[nbrs_y_adr[i]][nbrs_x_adr[i]] : 0; 
 end
 
-always @(posedge clk, posedge rst) begin
+always_ff @(posedge clk, posedge rst) begin
     if (rst)
         field <= 'b0;
     else if (i_w_en)
