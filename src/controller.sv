@@ -10,11 +10,12 @@ module controller #(
 ) (
     input  logic clk,
     input  logic rst,
-    input  logic pause
+    
+    input  logic i_pause // if it is active, new iteration of simulating doesn't start
 );
 
 typedef struct packed {
-    enum logic {FIELD_A, FIELD_B} field;
+    enum logic {FIELD_A, FIELD_B} read_field;
     
     logic is_simulating;
     
@@ -72,31 +73,35 @@ next_cell_state next_cell_state_inst (
     .o_cell_state   (new_cell_state)
 );
 
-assign cur_cell_state = (state.field == FIELD_A) ? cell_state_A : cell_state_B;
-assign cur_nbrs       = (state.field == FIELD_A) ? nbrs_A       : nbrs_B;
+assign cur_cell_state = (state.read_field == FIELD_A) ? cell_state_A : cell_state_B;
+assign cur_nbrs       = (state.read_field == FIELD_A) ? nbrs_A       : nbrs_B;
 
-assign field_A_w_en   = (state.field == FIELD_B) ? 1 : 0;
+assign field_A_w_en   = (state.read_field == FIELD_B) ? 1 : 0;
 assign field_B_w_en   = ~field_A_w_en;
 
 always_comb begin
-    new_state = state; // REVIEW чтобы не писать new = old ниже в некоторых случаях?
-    if (!state.is_simulating) begin
+    new_state = state;
+    if (!state.is_simulating & !i_pause) begin
         new_state.is_simulating = 1;
         new_state.x = '0;
         new_state.y = '0;
     end else if (state.x == FIELD_W-1 & state.y == FIELD_H-1) begin
         new_state.is_simulating = 0;
-        new_state.field = ~state.field;    
+        new_state.read_field = ~state.read_field;    
     end else begin
-        new_state.y = (state.x == FIELD_W-1) ? state.y + 1 : state.y;
-        new_state.x = x + 1;
+        if (state.x == FIELD_W-1) begin
+            new_state.x = 0;
+            new_state.y = (state.y == FIELD_H-1) ? 0 : state.y + 1; // REVIEW actually first case never happens
+        end else begin
+           new_state.x = state.x + 1; 
+        end
     end
 end
 
 always_ff @(posedge clk, posedge rst) begin
     if (rst) begin
         state.is_simulating <= 0;
-        state.field <= field_A;
+        state.read_field <= field_A;
         state.x <= 0;
         state.y <= 0;
     end else begin

@@ -33,29 +33,29 @@ initial begin
             $display("%b x %b", o_nbrs_rlvnt[3], o_nbrs_rlvnt[4]);
             $display("%b %b %b", o_nbrs_rlvnt[5], o_nbrs_rlvnt[6], o_nbrs_rlvnt[7]);
 
-            `ASSERT(!o_nbrs_rlvnt[0] | o_nbrs_x_adr[0] == i_cell_x_adr - 1'b1, "NB0X");
-            `ASSERT(!o_nbrs_rlvnt[0] | o_nbrs_y_adr[0] == i_cell_y_adr - 1'b1, "NB0X");
+            `ASSERT(!o_nbrs_rlvnt[0] | o_nbrs_x_adr[0] === i_cell_x_adr - 1'b1, "NB0X");
+            `ASSERT(!o_nbrs_rlvnt[0] | o_nbrs_y_adr[0] === i_cell_y_adr - 1'b1, "NB0X");
 
-            `ASSERT(!o_nbrs_rlvnt[1] | o_nbrs_x_adr[1] == i_cell_x_adr       , "NB1X");
-            `ASSERT(!o_nbrs_rlvnt[1] | o_nbrs_y_adr[1] == i_cell_y_adr - 1'b1, "NB1X");
+            `ASSERT(!o_nbrs_rlvnt[1] | o_nbrs_x_adr[1] === i_cell_x_adr       , "NB1X");
+            `ASSERT(!o_nbrs_rlvnt[1] | o_nbrs_y_adr[1] === i_cell_y_adr - 1'b1, "NB1X");
 
-            `ASSERT(!o_nbrs_rlvnt[2] | o_nbrs_x_adr[2] == i_cell_x_adr + 1'b1, "NB2X");
-            `ASSERT(!o_nbrs_rlvnt[2] | o_nbrs_y_adr[2] == i_cell_y_adr - 1'b1, "NB2X");
+            `ASSERT(!o_nbrs_rlvnt[2] | o_nbrs_x_adr[2] === i_cell_x_adr + 1'b1, "NB2X");
+            `ASSERT(!o_nbrs_rlvnt[2] | o_nbrs_y_adr[2] === i_cell_y_adr - 1'b1, "NB2X");
 
-            `ASSERT(!o_nbrs_rlvnt[3] | o_nbrs_x_adr[3] == i_cell_x_adr - 1'b1, "NB3X");
-            `ASSERT(!o_nbrs_rlvnt[3] | o_nbrs_y_adr[3] == i_cell_y_adr       , "NB3X");
+            `ASSERT(!o_nbrs_rlvnt[3] | o_nbrs_x_adr[3] === i_cell_x_adr - 1'b1, "NB3X");
+            `ASSERT(!o_nbrs_rlvnt[3] | o_nbrs_y_adr[3] === i_cell_y_adr       , "NB3X");
 
-            `ASSERT(!o_nbrs_rlvnt[4] | o_nbrs_x_adr[4] == i_cell_x_adr + 1'b1, "NB4X");
-            `ASSERT(!o_nbrs_rlvnt[4] | o_nbrs_y_adr[4] == i_cell_y_adr       , "NB4X");
+            `ASSERT(!o_nbrs_rlvnt[4] | o_nbrs_x_adr[4] === i_cell_x_adr + 1'b1, "NB4X");
+            `ASSERT(!o_nbrs_rlvnt[4] | o_nbrs_y_adr[4] === i_cell_y_adr       , "NB4X");
 
-            `ASSERT(!o_nbrs_rlvnt[5] | o_nbrs_x_adr[5] == i_cell_x_adr - 1'b1, "NB5X");
-            `ASSERT(!o_nbrs_rlvnt[5] | o_nbrs_y_adr[5] == i_cell_y_adr + 1'b1, "NB5X");
+            `ASSERT(!o_nbrs_rlvnt[5] | o_nbrs_x_adr[5] === i_cell_x_adr - 1'b1, "NB5X");
+            `ASSERT(!o_nbrs_rlvnt[5] | o_nbrs_y_adr[5] === i_cell_y_adr + 1'b1, "NB5X");
 
-            `ASSERT(!o_nbrs_rlvnt[6] | o_nbrs_x_adr[6] == i_cell_x_adr       , "NB6X");
-            `ASSERT(!o_nbrs_rlvnt[6] | o_nbrs_y_adr[6] == i_cell_y_adr + 1'b1, "NB6X");
+            `ASSERT(!o_nbrs_rlvnt[6] | o_nbrs_x_adr[6] === i_cell_x_adr       , "NB6X");
+            `ASSERT(!o_nbrs_rlvnt[6] | o_nbrs_y_adr[6] === i_cell_y_adr + 1'b1, "NB6X");
 
-            `ASSERT(!o_nbrs_rlvnt[7] | o_nbrs_x_adr[7] == i_cell_x_adr + 1'b1, "NB7X");
-            `ASSERT(!o_nbrs_rlvnt[7] | o_nbrs_y_adr[7] == i_cell_y_adr + 1'b1, "NB7X");
+            `ASSERT(!o_nbrs_rlvnt[7] | o_nbrs_x_adr[7] === i_cell_x_adr + 1'b1, "NB7X");
+            `ASSERT(!o_nbrs_rlvnt[7] | o_nbrs_y_adr[7] === i_cell_y_adr + 1'b1, "NB7X");
 
             if (y == 0)         `ASSERT(!o_nbrs_rlvnt[0] & !o_nbrs_rlvnt[1] & !o_nbrs_rlvnt[2], "Yeq0");
             if (x == 0)         `ASSERT(!o_nbrs_rlvnt[0] & !o_nbrs_rlvnt[3] & !o_nbrs_rlvnt[5], "Xeq0");
