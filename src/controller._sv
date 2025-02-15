@@ -32,10 +32,10 @@ logic cell_state_A, nbrs_A;
 logic cell_state_B, nbrs_B;
 logic cur_cell_state, cur_nbrs;
 
-field_ram field_A #(
+field_ram #(
     .FIELD_W(FIELD_W),
     .FIELD_H(FIELD_H)
-) (
+) field_A (
     .clk                (clk),
     .rst                (rst),
 
@@ -101,7 +101,7 @@ end
 always_ff @(posedge clk, posedge rst) begin
     if (rst) begin
         state.is_simulating <= 0;
-        state.read_field <= field_A;
+        state.read_field <= FIELD_A;
         state.x <= 0;
         state.y <= 0;
     end else begin

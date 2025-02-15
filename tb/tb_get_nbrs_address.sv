@@ -68,6 +68,6 @@ initial begin
     $finish;
 end
 
-endmodule
-
 `undef ASSERT
+
+endmodule
