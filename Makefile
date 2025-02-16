@@ -28,7 +28,7 @@ EXECUTABLE_FLAGS := +verilator+seed+50 +verilator+rand+reset+2
 DUMP_FILE := dump.svc
 OBJ_DIR := obj_dir
 
-ALL_SRCS := $(TB) $(SRC) $(ASRTS)
+ALL_SRCS :=  $(SRC) $(TB) $(ASRTS)
 
 .PHONY: run waves info
 
