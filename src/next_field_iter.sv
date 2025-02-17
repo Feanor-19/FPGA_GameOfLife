@@ -16,18 +16,18 @@ module next_field_iter #(
     input  logic rst_n,
     input  logic i_go,
 
-    input  logic                        i_cell_state_A,
-    input  logic                        i_cell_state_B,
-
-    input  logic [NEIGHBOURS_CNT-1:0]   i_nbrs_A,
-    input  logic [NEIGHBOURS_CNT-1:0]   i_nbrs_B,
+    input  logic                        i_next_cell_state,
+    input  logic [NEIGHBOURS_CNT-1:0]   i_next_nbrs,
 
     output logic                        o_is_simulating,
     
-    output logic [X_ADR_SIZE-1:0]       o_x,
-    output logic [X_ADR_SIZE-1:0]       o_y,
+    output logic [X_ADR_SIZE-1:0]       o_cur_x,
+    output logic [Y_ADR_SIZE-1:0]       o_cur_y,
 
-    output logic                        o_new_cell_state,
+    output logic [X_ADR_SIZE-1:0]       o_next_x,
+    output logic [Y_ADR_SIZE-1:0]       o_next_y,
+
+    output logic                        o_new_cur_cell_state,
 
     output cur_field_t                  o_cur_read_field
 );
@@ -35,59 +35,62 @@ module next_field_iter #(
 import defs::*;
 
 typedef struct packed {
-    cur_field_t             read_field;
-    logic                   is_simulating;
-    logic [X_ADR_SIZE-1:0]  x;
-    logic [Y_ADR_SIZE-1:0]  y;
+    cur_field_t                read_field;
+    logic                      is_simulating;
+    logic [X_ADR_SIZE-1:0]     cur_x;
+    logic [Y_ADR_SIZE-1:0]     cur_y;
+    logic                      cur_cell_state;
+    logic [NEIGHBOURS_CNT-1:0] cur_nbrs;
 } state_t;
 
 state_t state, new_state;
 
-logic cur_cell_state;
-logic [NEIGHBOURS_CNT-1:0] cur_nbrs;
-
 next_cell_state next_cell_state_inst (
-    .i_nbrs         (cur_nbrs),
-    .i_cell_state   (cur_cell_state),
+    .i_nbrs         (state.cur_nbrs),
+    .i_cell_state   (state.cur_cell_state),
 
-    .o_cell_state   (o_new_cell_state)
+    .o_cell_state   (o_new_cur_cell_state)
 );
-
-assign cur_cell_state = (state.read_field == FIELD_A) ? i_cell_state_A : i_cell_state_B;
-assign cur_nbrs       = (state.read_field == FIELD_A) ? i_nbrs_A       : i_nbrs_B;
 
 assign o_cur_read_field = state.read_field;
 assign o_is_simulating  = state.is_simulating;
-assign o_x              = state.x;
-assign o_y              = state.y;
+assign o_cur_x          = state.cur_x;
+assign o_cur_y          = state.cur_y;
+
+assign o_next_x         = new_state.cur_x;
+assign o_next_y         = new_state.cur_y;
 
 always_comb begin
     new_state = state;
     if (!state.is_simulating) begin
         new_state.is_simulating = i_go;
-        new_state.x = '0;
-        new_state.y = '0;
-    end else if (state.x == X_MAX_VAL & state.y == Y_MAX_VAL) begin
+        new_state.cur_x = '0;
+        new_state.cur_y = '0;
+    end else if (state.cur_x == X_MAX_VAL & state.cur_y == Y_MAX_VAL) begin
         new_state.is_simulating = 0;
         new_state.read_field = ~state.read_field;
-        new_state.x = '0;
-        new_state.y = '0;
+        new_state.cur_x = '0;
+        new_state.cur_y = '0;
     end else begin
-        if (state.x == X_MAX_VAL) begin
-            new_state.x = 0;
-            new_state.y = (state.y == Y_MAX_VAL) ? 0 : state.y + 1; // REVIEW actually first case never happens
+        if (state.cur_x == X_MAX_VAL) begin
+            new_state.cur_x = 0;
+            new_state.cur_y = (state.cur_y == Y_MAX_VAL) ? 0 : state.cur_y + 1; // REVIEW actually first case never happens
         end else begin
-            new_state.x = state.x + 1; 
+            new_state.cur_x = state.cur_x + 1; 
         end
     end
+    new_state.cur_cell_state = i_next_cell_state;
+    new_state.cur_nbrs       = i_next_nbrs;
 end
 
 always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin
-        state.is_simulating <= 0;
-        state.read_field <= FIELD_A;
-        state.x <= '0;
-        state.y <= '0;
+        state.is_simulating  <= 0;
+        state.read_field     <= FIELD_A;
+        state.cur_x          <= '0;
+        state.cur_y          <= '0;
+        state.cur_cell_state <= '0;
+        state.cur_nbrs       <= '0;
     end else begin
         state <= new_state;
     end
