@@ -52,6 +52,20 @@ next_cell_state next_cell_state_inst (
     .o_cell_state   (o_new_cur_cell_state)
 );
 
+logic [X_ADR_SIZE-1:0] next_x;
+logic [Y_ADR_SIZE-1:0] next_y;
+
+get_next_coords #(
+    .FIELD_W    (FIELD_W), 
+    .FIELD_H    (FIELD_H)
+) get_next_coords_inst (
+    .i_x        (state.cur_x),
+    .i_y        (state.cur_y),
+
+    .o_next_x   (next_x),
+    .o_next_y   (next_y)
+);
+
 assign o_cur_read_field = state.read_field;
 assign o_is_simulating  = state.is_simulating;
 assign o_cur_x          = state.cur_x;
@@ -72,12 +86,8 @@ always_comb begin
         new_state.cur_x = '0;
         new_state.cur_y = '0;
     end else begin
-        if (state.cur_x == X_MAX_VAL) begin
-            new_state.cur_x = 0;
-            new_state.cur_y = (state.cur_y == Y_MAX_VAL) ? 0 : state.cur_y + 1; // REVIEW actually first case never happens
-        end else begin
-            new_state.cur_x = state.cur_x + 1; 
-        end
+        new_state.cur_x = next_x;
+        new_state.cur_y = next_y;
     end
     new_state.cur_cell_state = i_next_cell_state;
     new_state.cur_nbrs       = i_next_nbrs;

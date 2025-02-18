@@ -27,6 +27,20 @@ localparam V_TOTAL = V_ACTIVE + V_FRONT + V_SYNC + V_BACK;
 logic [$clog2(H_TOTAL)-1:0] x_pos;
 logic [$clog2(V_TOTAL)-1:0] y_pos;
 
+logic [$clog2(H_TOTAL)-1:0] next_x_pos;
+logic [$clog2(V_TOTAL)-1:0] next_y_pos;
+
+get_next_coords #(
+    .FIELD_W    (H_TOTAL),
+    .FIELD_H    (V_TOTAL)
+) get_next_coords_inst (
+    .i_x        (x_pos),
+    .i_y        (y_pos),
+
+    .o_next_x   (next_x_pos),
+    .o_next_y   (next_y_pos)
+);
+
 assign o_draw_active = (x_pos < H_ACTIVE) & (y_pos < V_ACTIVE);
 
 assign o_active_x = o_draw_active ? x_pos[$clog2(H_ACTIVE)-1:0] : '0;
