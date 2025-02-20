@@ -2,7 +2,7 @@
 
 module tb_field_rom;
 
-localparam FIELD_W = 3;
+localparam FIELD_W = 4;
 localparam FIELD_H = 3;
 localparam CONFIG_ID = 1000;
 
@@ -35,6 +35,7 @@ initial begin
     end
 
     #5;
+    $finish;
 end
 
 endmodule
