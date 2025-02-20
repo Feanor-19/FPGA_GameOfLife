@@ -54,12 +54,8 @@ always_ff @(posedge clk, posedge rst) begin
         x_pos <= 0;
         y_pos <= 0;
     end else begin
-        if (x_pos == H_TOTAL-1) begin
-            x_pos <= 0;
-            y_pos <= (y_pos == V_TOTAL-1) ? 0 : y_pos+1;
-        end else begin
-            x_pos <= x_pos + 1;
-        end
+        x_pos <= next_x_pos;
+        y_pos <= next_y_pos;
     end
 end
 

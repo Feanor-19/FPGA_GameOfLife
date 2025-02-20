@@ -21,4 +21,5 @@ logic mem [FIELD_W*FIELD_H];
 assign o_cell_state = mem[i_cell_y_adr*FIELD_W + i_cell_x_adr];
 
 initial $readmemb($sformatf("field_configs/field_config_%0d.txt", CONFIG_ID), mem);
+
 endmodule
