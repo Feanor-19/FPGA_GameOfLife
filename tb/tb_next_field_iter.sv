@@ -21,10 +21,9 @@ logic [Y_ADR_SIZE-1:0]       o_cur_y;
 logic [X_ADR_SIZE-1:0]       o_next_x;
 logic [Y_ADR_SIZE-1:0]       o_next_y;
 logic                        o_new_cur_cell_state;
-cur_field_t                  o_cur_read_field;
+field_t                  o_cur_read_field;
 
 next_field_iter #(.FIELD_W(FIELD_W), .FIELD_H(FIELD_H)) dut_inst (.*);
-
 
 always begin
     $dumpvars(0, tb_next_field_iter); 
@@ -35,7 +34,7 @@ initial forever #5 clk = ~clk;
 
 `define ASSERT(EXPR, ERR_MSG) if (!(EXPR)) $error("[FAIL]: ", ERR_MSG)
 
-cur_field_t cur_read_field = FIELD_A; // TODO - разобраться, почему нельзя объявить внутри initial ниже
+field_t cur_read_field = FIELD_A; // TODO - разобраться, почему нельзя объявить внутри initial ниже
 logic [X_ADR_SIZE-1:0] next_x;        // TODO - изначально это были int, но их не получилось объявить там, 
 logic [Y_ADR_SIZE-1:0] next_y;        //        где они нужны
 

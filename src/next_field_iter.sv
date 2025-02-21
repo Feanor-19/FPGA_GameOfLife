@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-import defs::cur_field_t;
+import defs::field_t;
 
 module next_field_iter #(
     parameter FIELD_W,
@@ -29,13 +29,13 @@ module next_field_iter #(
 
     output logic                        o_new_cur_cell_state,
 
-    output cur_field_t                  o_cur_read_field
+    output field_t                  o_cur_read_field
 );
 
 import defs::*;
 
 typedef struct packed {
-    cur_field_t                read_field;
+    field_t                    read_field;
     logic                      is_simulating;
     logic [X_ADR_SIZE-1:0]     cur_x;
     logic [Y_ADR_SIZE-1:0]     cur_y;
