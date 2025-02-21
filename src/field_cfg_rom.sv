@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module field_rom #(
+module field_cfg_rom #(
     parameter FIELD_W,
     parameter FIELD_H,
     parameter CONFIG_ID,

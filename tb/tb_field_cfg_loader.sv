@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module tb_rom_loader;
+module tb_field_cfg_loader;
 
 initial $dumpfile("dump.svc");
 
@@ -14,7 +14,7 @@ logic                  o_is_loading;
 logic [X_ADR_SIZE-1:0] o_cur_x;
 logic [Y_ADR_SIZE-1:0] o_cur_y;
 
-rom_loader #(.FIELD_W(FIELD_W), .FIELD_H(FIELD_H)) dut_inst (.*);
+field_cfg_loader #(.FIELD_W(FIELD_W), .FIELD_H(FIELD_H)) dut_inst (.*);
 
 always begin
     $dumpvars(0, tb_rom_loader); 

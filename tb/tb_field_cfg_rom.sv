@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module tb_field_rom;
+module tb_field_cfg_rom;
 
 localparam FIELD_W = 4;
 localparam FIELD_H = 3;
@@ -14,7 +14,7 @@ logic [Y_ADR_SIZE-1:0] i_cell_y_adr;
 
 logic                  o_cell_state;
 
-field_rom #(
+field_cfg_rom #(
     .FIELD_W(FIELD_W), 
     .FIELD_H(FIELD_H), 
     .CONFIG_ID(CONFIG_ID)

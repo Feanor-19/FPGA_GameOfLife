@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module rom_loader #(
+module field_cfg_loader #(
     parameter FIELD_W,
     parameter FIELD_H,
 
