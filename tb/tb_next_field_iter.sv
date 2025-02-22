@@ -13,15 +13,15 @@ localparam Y_ADR_SIZE     = $clog2(FIELD_H);
 localparam NEIGHBOURS_CNT = 8; //REVIEW
 
 logic clk = 0, rst_n = 1, i_go = 0;
-logic                        i_next_cell_state = 0;
-logic [NEIGHBOURS_CNT-1:0]   i_next_nbrs       = '0;
-logic                        o_is_simulating;
-logic [X_ADR_SIZE-1:0]       o_cur_x;
-logic [Y_ADR_SIZE-1:0]       o_cur_y;
-logic [X_ADR_SIZE-1:0]       o_next_x;
-logic [Y_ADR_SIZE-1:0]       o_next_y;
-logic                        o_new_cur_cell_state;
-field_t                  o_cur_read_field;
+logic                      i_next_cell_state = 0;
+logic [NEIGHBOURS_CNT-1:0] i_next_nbrs       = '0;
+logic                      o_is_simulating;
+logic [X_ADR_SIZE-1:0]     o_cur_x;
+logic [Y_ADR_SIZE-1:0]     o_cur_y;
+logic [X_ADR_SIZE-1:0]     o_next_x;
+logic [Y_ADR_SIZE-1:0]     o_next_y;
+logic                      o_new_cur_cell_state;
+field_t                    o_cur_read_field;
 
 next_field_iter #(.FIELD_W(FIELD_W), .FIELD_H(FIELD_H)) dut_inst (.*);
 

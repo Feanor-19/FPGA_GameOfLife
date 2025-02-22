@@ -16,20 +16,20 @@ module next_field_iter #(
     input  logic rst_n,
     input  logic i_go,
 
-    input  logic                        i_next_cell_state,
-    input  logic [NEIGHBOURS_CNT-1:0]   i_next_nbrs,
+    input  logic                      i_next_cell_state,
+    input  logic [NEIGHBOURS_CNT-1:0] i_next_nbrs,
 
-    output logic                        o_is_simulating,
+    output logic                      o_is_simulating,
     
-    output logic [X_ADR_SIZE-1:0]       o_cur_x,
-    output logic [Y_ADR_SIZE-1:0]       o_cur_y,
+    output logic [X_ADR_SIZE-1:0]     o_cur_x,
+    output logic [Y_ADR_SIZE-1:0]     o_cur_y,
 
-    output logic [X_ADR_SIZE-1:0]       o_next_x,
-    output logic [Y_ADR_SIZE-1:0]       o_next_y,
+    output logic [X_ADR_SIZE-1:0]     o_next_x,
+    output logic [Y_ADR_SIZE-1:0]     o_next_y,
 
-    output logic                        o_new_cur_cell_state,
+    output logic                      o_new_cur_cell_state,
 
-    output field_t                  o_cur_read_field
+    output field_t                    o_cur_read_field
 );
 
 import defs::*;
