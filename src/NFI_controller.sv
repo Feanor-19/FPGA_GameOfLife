@@ -10,20 +10,29 @@ module NFI_controller #(
     input  logic clk,
     input  logic rst_n,
 
+    input  logic i_cmd_toggle_pause,
     input  logic i_NFI_allowed,
 
     output logic o_go
 );
 
 logic [CNT_BITS-1:0] cnt;
+logic paused;
 
 assign o_go = (cnt == MAX_CNT);
+
+always_ff @(posedge clk, negedge rst_n) begin
+    if (!rst_n)
+        paused <= 0;
+    else if (i_cmd_toggle_pause) // TODO - эта фигня не будет адекватно работать... нужно переключать только по фронту
+        paused <= ~paused;
+end
 
 always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin
         cnt <= 0;
     end else begin
-        if (cnt != MAX_CNT & i_NFI_allowed)
+        if (cnt != MAX_CNT & !paused & i_NFI_allowed)
             cnt <= cnt + 1;
         else if (cnt == MAX_CNT)
             cnt <= 0;

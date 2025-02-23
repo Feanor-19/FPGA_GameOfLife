@@ -20,20 +20,18 @@ end
 
 initial forever #5 clk = ~clk; 
 
+always begin
+    repeat ($urandom_range(1, 10)) @(posedge clk);
+    i_NFI_allowed <= ~i_NFI_allowed;
+end
+
 initial begin
     #5;
     rst_n = 0;
     #5;
     rst_n = 1;
 
-    @(posedge clk);
-    i_NFI_allowed = 1;
-
     $monitor(o_go);
-
-    #89 i_NFI_allowed = 0;
-
-    #19 i_NFI_allowed = 1;
 
     #1000;
     $finish;

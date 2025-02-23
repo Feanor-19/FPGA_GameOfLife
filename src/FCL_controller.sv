@@ -5,12 +5,14 @@
 import defs::load_cfg_req_t;
 
 module FCL_controller (
-    input  logic clk,
-    input  logic rst_n,
+    input  logic          clk,
+    input  logic          rst_n,
 
     input  logic          i_cmd_load_cfg_1,
+    input  logic          i_cmd_load_cfg_2,
 
-    input  logic          i_is_simulating,
+    input  logic          i_FCL_allowed,
+
     input  logic          i_is_loading, 
 
     output logic          o_go,
@@ -36,10 +38,11 @@ always_comb begin
         DEFAULT: begin
             case (1'b1)
                 i_cmd_load_cfg_1: new_load_cfg_req = CFG_1;
+                i_cmd_load_cfg_2: new_load_cfg_req = CFG_2;
                 default:          new_load_cfg_req = NO_REQ;
             endcase
             
-            if (cur_load_cfg_req != NO_REQ & !i_is_simulating)
+            if (cur_load_cfg_req != NO_REQ & !i_FCL_allowed)
                 new_state = START_LOADING;
         end
         START_LOADING:
@@ -51,14 +54,6 @@ always_comb begin
             end
         end
     endcase
-
-    // if (cur_load_cfg_req == NO_REQ)
-    //     unique case (1'b1)
-    //         i_cmd_load_cfg_1: new_load_cfg_req = CFG_1;
-    //     endcase
-
-    // if (new_state == DEFAULT)
-    //     new_load_cfg_req = NO_REQ;
 end
 
 assign o_cur_load_cfg_req = cur_load_cfg_req;

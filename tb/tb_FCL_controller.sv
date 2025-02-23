@@ -7,8 +7,9 @@ import defs::*;
 logic clk = 0, rst_n = 1;
 
 logic          i_cmd_load_cfg_1 = 0;
+logic          i_cmd_load_cfg_2 = 0;
 
-logic          i_is_simulating  = 0;
+logic          i_FCL_allowed    = 0;
 logic          i_is_loading     = 0; 
 
 logic          o_go;
@@ -41,13 +42,13 @@ initial begin
     `ASSERT(o_cur_load_cfg_req === NO_REQ, "clc_req wrong after rst");
     `ASSERT(o_go === 0, "o_go wrong after rst");
 
-    i_is_simulating = 1;
+    i_FCL_allowed = 1;
 
     #1 i_cmd_load_cfg_1 = 1;
 
     @(posedge clk);
     @(posedge clk);
-    i_is_simulating = 0;
+    i_FCL_allowed = 0;
 
     #1;
     `ASSERT(o_cur_load_cfg_req === CFG_1, "clc_req wrong 1");
