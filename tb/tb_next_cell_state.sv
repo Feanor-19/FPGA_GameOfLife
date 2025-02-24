@@ -21,9 +21,6 @@ integer num_of_nbrs;
 assign num_of_nbrs = $countones(i_nbrs);
 
 initial begin
-    $dumpfile("dump.svc");
-    //$monitor("i_cell_state=%b, i_nbrs=%b, o_cell_state=%b", i_cell_state, i_nbrs, o_cell_state);
-
     for (test_dat = 0; test_dat != 9'b111111111; test_dat++) begin
         if (( i_cell_state &  (num_of_nbrs == 2 | num_of_nbrs == 3) & !o_cell_state)
           | ( i_cell_state & !(num_of_nbrs == 2 | num_of_nbrs == 3) &  o_cell_state) 
@@ -31,7 +28,6 @@ initial begin
           | (!i_cell_state & !(num_of_nbrs == 3) &  o_cell_state))
             $error("[FAIL]: i_cell_state=%b, i_nbrs=%b, o_cell_state=%b", 
                     i_cell_state, i_nbrs, o_cell_state);
-        #1 $dumpvars;
     end
     #1 $display("[PASS]"); 
     $finish;

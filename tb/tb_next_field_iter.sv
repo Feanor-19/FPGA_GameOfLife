@@ -26,7 +26,7 @@ field_t                    o_cur_read_field;
 next_field_iter #(.FIELD_W(FIELD_W), .FIELD_H(FIELD_H)) dut_inst (.*);
 
 always begin
-    $dumpvars(0, tb_next_field_iter); 
+    $dumpvars(0); 
     #1;
 end
 

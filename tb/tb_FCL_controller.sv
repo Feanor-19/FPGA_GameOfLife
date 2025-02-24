@@ -20,7 +20,7 @@ FCL_controller dut_inst (.*);
 initial $dumpfile("dump.svc");
 
 always begin
-    $dumpvars(0, tb_next_field_iter); 
+    $dumpvars(0); 
     #1;
 end
 
@@ -42,13 +42,12 @@ initial begin
     `ASSERT(o_cur_load_cfg_req === NO_REQ, "clc_req wrong after rst");
     `ASSERT(o_go === 0, "o_go wrong after rst");
 
-    i_FCL_allowed = 1;
-
     #1 i_cmd_load_cfg_1 = 1;
 
     @(posedge clk);
     @(posedge clk);
-    i_FCL_allowed = 0;
+    @(posedge clk);
+    i_FCL_allowed = 1;
 
     #1;
     `ASSERT(o_cur_load_cfg_req === CFG_1, "clc_req wrong 1");

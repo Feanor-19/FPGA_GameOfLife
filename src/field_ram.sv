@@ -32,7 +32,10 @@ logic [X_ADR_SIZE-1:0] nbrs_x_adr [NEIGHBOURS_CNT];
 logic [Y_ADR_SIZE-1:0] nbrs_y_adr [NEIGHBOURS_CNT];
 logic                  nbrs_rlvnt [NEIGHBOURS_CNT];
 
-get_nbrs_address get_nbrs_address_inst (
+get_nbrs_address #(
+    .FIELD_W        (FIELD_W),
+    .FIELD_H        (FIELD_H)
+) get_nbrs_address_inst (
     .i_cell_x_adr   (i_cell_x_adr_prw1),
     .i_cell_y_adr   (i_cell_y_adr_prw1),
     

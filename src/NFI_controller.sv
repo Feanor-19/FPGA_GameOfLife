@@ -21,10 +21,11 @@ logic paused;
 
 assign o_go = (cnt == MAX_CNT);
 
-always_ff @(posedge clk, negedge rst_n) begin
+// REVIEW - регистр, "тактируемый" не clk
+always_ff @(posedge i_cmd_toggle_pause, negedge rst_n) begin
     if (!rst_n)
         paused <= 0;
-    else if (i_cmd_toggle_pause) // TODO - эта фигня не будет адекватно работать... нужно переключать только по фронту
+    else if (i_cmd_toggle_pause) 
         paused <= ~paused;
 end
 

@@ -42,7 +42,7 @@ always_comb begin
                 default:          new_load_cfg_req = NO_REQ;
             endcase
             
-            if (cur_load_cfg_req != NO_REQ & !i_FCL_allowed)
+            if (cur_load_cfg_req != NO_REQ & i_FCL_allowed)
                 new_state = START_LOADING;
         end
         START_LOADING:

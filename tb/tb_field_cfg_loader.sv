@@ -17,7 +17,7 @@ logic [Y_ADR_SIZE-1:0] o_cur_y;
 field_cfg_loader #(.FIELD_W(FIELD_W), .FIELD_H(FIELD_H)) dut_inst (.*);
 
 always begin
-    $dumpvars(0, tb_rom_loader); 
+    $dumpvars(0); 
     #1;
 end
 

@@ -3,12 +3,12 @@
 // EARLY WIP
 
 module top (
-    input  logic        clk,
+    input  logic        clk,                // tuned for vga
     input  logic        rst_n,
 
-    input  logic        i_cmd_toggle_pause,
-    input  logic        i_cmd_load_cfg_1,
-    input  logic        i_cmd_load_cfg_2,
+    input  logic        i_cmd_toggle_pause, // filtered signal from button
+    input  logic        i_cmd_load_cfg_1,   // filtered signal from button
+    input  logic        i_cmd_load_cfg_2,   // filtered signal from button
 
     output logic        o_vga_h_sync,
     output logic        o_vga_v_sync,
@@ -17,12 +17,15 @@ module top (
     output logic [4:0]  o_vga_b
 );
 
-import defs::*;
+import defs_vga::*;
 
-localparam FIELD_W        = 640/2;
-localparam FIELD_H        = 480/2;
+localparam FIELD_W        = VGA_H_ACTIVE/2;
+localparam FIELD_H        = VGA_V_ACTIVE/2;
 localparam NEIGHBOURS_CNT = 8;
-localparam NFI_CNT        = (640*480) * 10;
+localparam NFI_CNT        = (VGA_H_ACTIVE*VGA_V_ACTIVE) * 10;
+
+localparam logic[15:0] COLOR_ALIVE = '1;
+localparam logic[15:0] COLOR_DEAD  = '0;
 
 localparam X_ADR_SIZE     = $clog2(FIELD_W);
 localparam Y_ADR_SIZE     = $clog2(FIELD_H);
@@ -38,7 +41,7 @@ NFI_controller #(
     .clk                    (clk),
     .rst_n                  (rst_n),
 
-    .i_cmd_toggle_pause     (i_cmd_toggle_pause)
+    .i_cmd_toggle_pause     (i_cmd_toggle_pause),
     .i_NFI_allowed          (NFI_allowed),
 
     .o_go                   (NFI_go)
@@ -191,7 +194,7 @@ logic FCL_is_loading;
 
 field_cfg_loader #(
     .FIELD_W                (FIELD_W),
-    .FIELD_H                (FIELD_H),
+    .FIELD_H                (FIELD_H)
 ) field_cfg_loader_inst (
     .clk                    (clk),
     .rst_n                  (rst_n),
@@ -221,5 +224,89 @@ FCL_controller FCL_controller_inst (
     .o_go                   (FCL_go),
     .o_cur_load_cfg_req     (FCL_cur_load_cfg_req)
 );
+
+// --------------------------------------------------------
+
+logic                            VGA_draw_active;
+logic [$clog2(VGA_H_ACTIVE)-1:0] VGA_active_x;
+logic [$clog2(VGA_V_ACTIVE)-1:0] VGA_active_y;
+logic                            VGA_cur_cell;
+
+vga vga_inst (
+    .clk                    (clk),
+    .rst_n                  (rst_n),
+
+    .o_draw_active          (VGA_draw_active),
+    .o_active_x             (VGA_active_x),
+    .o_active_y             (VGA_active_y),
+    .o_h_sync               (o_vga_h_sync),
+    .o_v_sync               (o_vga_v_sync)
+);
+
+// --------------------------------------------------------
+
+assign NFI_allowed = ~NFI_is_simulating & ~FCL_is_loading & FCL_cur_load_cfg_req == NO_REQ; 
+assign FCL_allowed = ~NFI_is_simulating;
+
+logic FCL_read_cell_cur_cfg;
+always_comb begin
+    if      (FCL_cur_load_cfg_req == CFG_1)
+        FCL_read_cell_cur_cfg = FCL_read_cell_cfg_1;
+    else if (FCL_cur_load_cfg_req == CFG_2)
+        FCL_read_cell_cur_cfg = FCL_read_cell_cfg_2;
+    else
+        FCL_read_cell_cur_cfg = '0; // REVIEW - is 0 ok if it doesn't matter?
+end
+
+always_comb begin
+    field_A_x_adr_pr2 = VGA_active_x;
+    field_A_y_adr_pr2 = VGA_active_y;
+
+    field_B_x_adr_pr2 = VGA_active_x;
+    field_B_y_adr_pr2 = VGA_active_y;
+
+    if (NFI_cur_read_field == FIELD_A) begin
+        field_A_w_en_p1 = FCL_is_loading;
+        field_B_w_en_p1 = NFI_is_simulating;
+
+        field_A_x_adr_prw1 = (FCL_is_loading) ? FCL_cell_x_adr : NFI_next_x;
+        field_A_y_adr_prw1 = (FCL_is_loading) ? FCL_cell_y_adr : NFI_next_y;
+
+        field_B_x_adr_prw1 = NFI_cur_x;
+        field_B_y_adr_prw1 = NFI_cur_y;
+
+        field_A_write_cell_p1 = (FCL_is_loading)    ? FCL_read_cell_cur_cfg  : 0;
+        field_B_write_cell_p1 = (NFI_is_simulating) ? NFI_new_cur_cell_state : 0;
+        
+        NFI_next_cell_state = field_A_read_cell_pr1;
+        NFI_next_nbrs       = field_A_read_nbrs_pr1;
+
+        VGA_cur_cell = field_A_read_cell_pr2;
+    end else begin // NFI_cur_read_field == FIELD_B
+        field_B_w_en_p1 = FCL_is_loading;
+        field_A_w_en_p1 = NFI_is_simulating;
+
+        field_B_x_adr_prw1 = (FCL_is_loading) ? FCL_cell_x_adr : NFI_next_x;
+        field_B_y_adr_prw1 = (FCL_is_loading) ? FCL_cell_y_adr : NFI_next_y;
+
+        field_A_x_adr_prw1 = NFI_cur_x;
+        field_A_y_adr_prw1 = NFI_cur_y;
+
+        field_B_write_cell_p1 = (FCL_is_loading)    ? FCL_read_cell_cur_cfg  : 0;
+        field_A_write_cell_p1 = (NFI_is_simulating) ? NFI_new_cur_cell_state : 0;
+        
+        NFI_next_cell_state = field_B_read_cell_pr1;
+        NFI_next_nbrs       = field_B_read_nbrs_pr1;
+
+        VGA_cur_cell = field_B_read_cell_pr2;
+    end
+end
+
+always_comb begin
+    if (VGA_draw_active)
+        {o_vga_r, o_vga_g, o_vga_b} = (VGA_cur_cell) ? COLOR_ALIVE : COLOR_DEAD;
+    else
+        {o_vga_r, o_vga_g, o_vga_b} = '0;
+end
 
 endmodule
