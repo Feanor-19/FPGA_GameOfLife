@@ -21,7 +21,7 @@ logic paused;
 
 assign o_go = (cnt == MAX_CNT);
 
-// REVIEW - регистр, "тактируемый" не clk
+// FIXME - регистр, "тактируемый" не clk
 always_ff @(posedge i_cmd_toggle_pause, negedge rst_n) begin
     if (!rst_n)
         paused <= 0;
@@ -33,7 +33,7 @@ always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin
         cnt <= 0;
     end else begin
-        if (cnt != MAX_CNT & !paused & i_NFI_allowed)
+        if (cnt != MAX_CNT && !paused && i_NFI_allowed)
             cnt <= cnt + 1;
         else if (cnt == MAX_CNT)
             cnt <= 0;

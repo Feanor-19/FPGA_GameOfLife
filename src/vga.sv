@@ -43,13 +43,13 @@ get_next_coords #(
     .o_next_y   (next_y_pos)
 );
 
-assign o_draw_active = (x_pos < H_ACTIVE) & (y_pos < V_ACTIVE);
+assign o_draw_active = (x_pos < H_ACTIVE) && (y_pos < V_ACTIVE);
 
 assign o_active_x = o_draw_active ? x_pos[$clog2(H_ACTIVE)-1:0] : '0;
 assign o_active_y = o_draw_active ? y_pos[$clog2(V_ACTIVE)-1:0] : '0;
 
-assign o_h_sync = (H_ACTIVE+H_FRONT-1 < x_pos & x_pos < H_TOTAL-H_BACK) ? 0 : 1;
-assign o_v_sync = (V_ACTIVE+V_FRONT-1 < y_pos & y_pos < V_TOTAL-V_BACK) ? 0 : 1;
+assign o_h_sync = (H_ACTIVE+H_FRONT-1 < x_pos && x_pos < H_TOTAL-H_BACK) ? 0 : 1;
+assign o_v_sync = (V_ACTIVE+V_FRONT-1 < y_pos && y_pos < V_TOTAL-V_BACK) ? 0 : 1;
 
 always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin

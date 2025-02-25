@@ -22,10 +22,10 @@ assign num_of_nbrs = $countones(i_nbrs);
 
 initial begin
     for (test_dat = 0; test_dat != 9'b111111111; test_dat++) begin
-        if (( i_cell_state &  (num_of_nbrs == 2 | num_of_nbrs == 3) & !o_cell_state)
-          | ( i_cell_state & !(num_of_nbrs == 2 | num_of_nbrs == 3) &  o_cell_state) 
-          | (!i_cell_state &  (num_of_nbrs == 3) & !o_cell_state)
-          | (!i_cell_state & !(num_of_nbrs == 3) &  o_cell_state))
+        if (( i_cell_state &&  (num_of_nbrs == 2 || num_of_nbrs == 3) && !o_cell_state)
+         || ( i_cell_state && !(num_of_nbrs == 2 || num_of_nbrs == 3) &&  o_cell_state) 
+         || (!i_cell_state &&  (num_of_nbrs == 3) && !o_cell_state)
+         || (!i_cell_state && !(num_of_nbrs == 3) &&  o_cell_state))
             $error("[FAIL]: i_cell_state=%b, i_nbrs=%b, o_cell_state=%b", 
                     i_cell_state, i_nbrs, o_cell_state);
     end

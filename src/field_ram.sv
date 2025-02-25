@@ -1,12 +1,11 @@
 `timescale 1ns/1ps
 
-module field_ram #(
+module field_ram import defs::NEIGHBOURS_CNT; #(
     parameter FIELD_W,
     parameter FIELD_H,
 
-    localparam X_ADR_SIZE     = $clog2(FIELD_W),
-    localparam Y_ADR_SIZE     = $clog2(FIELD_H),
-    localparam NEIGHBOURS_CNT = 8 //REVIEW
+    localparam X_ADR_SIZE = $clog2(FIELD_W),
+    localparam Y_ADR_SIZE = $clog2(FIELD_H)
 ) (
     input  logic                      clk,
     input  logic                      rst_n, 

@@ -10,9 +10,10 @@ localparam FIELD_W = 5;
 localparam FIELD_H = 3;
 localparam X_ADR_SIZE     = $clog2(FIELD_W);
 localparam Y_ADR_SIZE     = $clog2(FIELD_H);
-localparam NEIGHBOURS_CNT = 8; //REVIEW
+import defs::NEIGHBOURS_CNT;
 
-logic clk = 0, rst_n = 1, i_go = 0;
+bit clk = 0, rst_n = 1;
+logic                      i_go = 0;
 logic                      i_next_cell_state = 0;
 logic [NEIGHBOURS_CNT-1:0] i_next_nbrs       = '0;
 logic                      o_is_simulating;
@@ -35,8 +36,7 @@ initial forever #5 clk = ~clk;
 `define ASSERT(EXPR, ERR_MSG) if (!(EXPR)) $error("[FAIL]: ", ERR_MSG)
 
 field_t cur_read_field = FIELD_A; // TODO - разобраться, почему нельзя объявить внутри initial ниже
-logic [X_ADR_SIZE-1:0] next_x;        // TODO - изначально это были int, но их не получилось объявить там, 
-logic [Y_ADR_SIZE-1:0] next_y;        //        где они нужны
+int next_x, next_y;
 
 logic                      prev_cell_state = 0;
 logic [NEIGHBOURS_CNT-1:0] prev_nbrs       = '0;
@@ -62,9 +62,6 @@ initial begin
         #5;
         i_go = 0;
 
-        // TODO - разобраться, почему waveform показывает другие значения x (4 и 0), чем display ниже
-        // strobe вместо display, показывающий "финальные значения для текущего момента времени", даёт
-        // те же показания, что и waveform
         for (int y = 0; y < FIELD_H; y++) begin
             for (int x = 0; x < FIELD_W; x++) begin
                 @(posedge clk);
@@ -77,11 +74,11 @@ initial begin
                 `ASSERT(X_ADR_SIZE'(x) === o_cur_x, "o_cur_x wrong");
                 `ASSERT(Y_ADR_SIZE'(y) === o_cur_y, "o_cur_y wrong");
 
-                next_x = X_ADR_SIZE'((x == FIELD_W-1) ? 0 : x+1); // TODO - разобраться, почему не дает объявить прямо здесь
-                next_y = Y_ADR_SIZE'((next_x != 0) ? y : ( (y == FIELD_H-1) ? 0 : y+1 )); 
+                next_x = ((x == FIELD_W-1) ? 0 : x+1);
+                next_y = ((next_x != 0) ? y : ( (y == FIELD_H-1) ? 0 : y+1 )); 
 
-                `ASSERT(next_x === o_next_x, "o_next_x wrong");
-                `ASSERT(next_y === o_next_y, "o_next_y wrong");
+                `ASSERT(next_x === int'(o_next_x), "o_next_x wrong");
+                `ASSERT(next_y === int'(o_next_y), "o_next_y wrong");
 
                 `ASSERT(o_is_simulating, "is_sim not high");
 

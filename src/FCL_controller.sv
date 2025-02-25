@@ -2,9 +2,7 @@
 
 `timescale 1ns/1ps
 
-import defs::load_cfg_req_t;
-
-module FCL_controller (
+module FCL_controller import defs::*; (
     input  logic          clk,
     input  logic          rst_n,
 
@@ -18,8 +16,6 @@ module FCL_controller (
     output logic          o_go,
     output load_cfg_req_t o_cur_load_cfg_req
 );
-
-import defs::*;
 
 typedef enum logic [1:0] { 
     DEFAULT, 
@@ -42,7 +38,7 @@ always_comb begin
                 default:          new_load_cfg_req = NO_REQ;
             endcase
             
-            if (cur_load_cfg_req != NO_REQ & i_FCL_allowed)
+            if (cur_load_cfg_req != NO_REQ && i_FCL_allowed)
                 new_state = START_LOADING;
         end
         START_LOADING:

@@ -6,7 +6,7 @@ initial $dumpfile("dump.svc");
 
 localparam MAX_CNT = 10;
 
-logic clk = 0, rst_n = 1;
+bit clk = 0, rst_n = 1;
 logic i_NFI_allowed = 0;
 logic i_cmd_toggle_pause = 0;
 

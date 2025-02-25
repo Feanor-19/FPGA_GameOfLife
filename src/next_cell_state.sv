@@ -1,8 +1,6 @@
 `timescale 1ns/1ps
 
-module next_cell_state #(
-    localparam NEIGHBOURS_CNT = 8
-) (
+module next_cell_state import defs::NEIGHBOURS_CNT; (
     input  logic [NEIGHBOURS_CNT-1:0]   i_nbrs,
     input  logic                        i_cell_state,
 
@@ -25,7 +23,7 @@ end
 
 always_comb begin
     if (i_cell_state) begin
-        if (num_alive_nbrs == 2 | num_alive_nbrs == 3)
+        if (num_alive_nbrs == 2 || num_alive_nbrs == 3)
             o_cell_state = 1'b1;
         else
             o_cell_state = 1'b0;

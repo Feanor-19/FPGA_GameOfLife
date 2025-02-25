@@ -16,8 +16,7 @@ logic [Y_ADR_SIZE-1:0] o_next_y;
 
 get_next_coords #(.FIELD_W(FIELD_W), .FIELD_H(FIELD_H)) dut (.*);
 
-logic [X_ADR_SIZE-1:0] next_x; // TODO - изначально это были int, но их не получилось объявить там, 
-logic [Y_ADR_SIZE-1:0] next_y; //        где они нужны
+int next_x, next_y;
 
 `define ASSERT(EXPR, ERR_MSG) if (!(EXPR)) $error("[FAIL]: ", ERR_MSG)
 
@@ -31,14 +30,14 @@ initial begin
             #1;
             $dumpvars;
 
-            next_x = X_ADR_SIZE'((x == FIELD_W-1) ? 0 : x+1); // TODO - разобраться, почему не дает объявить прямо здесь
-            next_y = Y_ADR_SIZE'((next_x != 0) ? y : ( (y == FIELD_H-1) ? 0 : y+1 )); 
+            next_x = ((x == FIELD_W-1) ? 0 : x+1); // TODO - разобраться, почему не дает объявить прямо здесь
+            next_y = ((next_x != 0) ? y : ( (y == FIELD_H-1) ? 0 : y+1 )); 
 
             $display("x=%d, y=%d, i_x=%d, i_y=%d, o_next_x=%d, o_next_y=%d",
                           x, y, i_x, i_y, o_next_x, o_next_y);
                 
-            `ASSERT(next_x === o_next_x, "o_next_x wrong");
-            `ASSERT(next_y === o_next_y, "o_next_y wrong");
+            `ASSERT(next_x === int'(o_next_x), "o_next_x wrong");
+            `ASSERT(next_y === int'(o_next_y), "o_next_y wrong");
         end
     end
 

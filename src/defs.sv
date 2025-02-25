@@ -2,6 +2,8 @@
 
 package defs;
 
+localparam NEIGHBOURS_CNT = 8;
+
 typedef enum logic { 
     FIELD_A, 
     FIELD_B 

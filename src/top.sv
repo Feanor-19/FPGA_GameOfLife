@@ -2,29 +2,28 @@
 
 // EARLY WIP
 
-module top (
-    input  logic        clk,                // tuned for vga
-    input  logic        rst_n,
+module top import defs_vga::*; (
+    input  logic                clk,                // tuned for vga
+    input  logic                rst_n,
 
-    input  logic        i_cmd_toggle_pause, // filtered signal from button
-    input  logic        i_cmd_load_cfg_1,   // filtered signal from button
-    input  logic        i_cmd_load_cfg_2,   // filtered signal from button
+    input  logic                i_cmd_toggle_pause, // filtered signal from button
+    input  logic                i_cmd_load_cfg_1,   // filtered signal from button
+    input  logic                i_cmd_load_cfg_2,   // filtered signal from button
 
-    output logic        o_vga_h_sync,
-    output logic        o_vga_v_sync,
-    output logic [4:0]  o_vga_r,
-    output logic [5:0]  o_vga_g,
-    output logic [4:0]  o_vga_b
+    output logic                o_vga_h_sync,
+    output logic                o_vga_v_sync,
+    output logic [BITS_R-1:0]   o_vga_r,
+    output logic [BITS_G-1:0]   o_vga_g,
+    output logic [BITS_B-1:0]   o_vga_b
 );
 
-import defs_vga::*;
+import defs::*;
 
 localparam FIELD_W        = VGA_H_ACTIVE/2;
 localparam FIELD_H        = VGA_V_ACTIVE/2;
-localparam NEIGHBOURS_CNT = 8;
 localparam NFI_CNT        = (VGA_H_ACTIVE*VGA_V_ACTIVE) * 10;
 
-localparam logic[15:0] COLOR_ALIVE = '1;
+localparam logic[15:0] COLOR_ALIVE = {16{1'b1}};
 localparam logic[15:0] COLOR_DEAD  = '0;
 
 localparam X_ADR_SIZE     = $clog2(FIELD_W);
@@ -33,7 +32,7 @@ localparam Y_ADR_SIZE     = $clog2(FIELD_H);
 // --------------------------------------------------------
 
 logic NFI_allowed;
-logic NFI_go;
+logic ctrl2NFI_go;
 
 NFI_controller #(
     .MAX_CNT                (NFI_CNT)
@@ -44,7 +43,7 @@ NFI_controller #(
     .i_cmd_toggle_pause     (i_cmd_toggle_pause),
     .i_NFI_allowed          (NFI_allowed),
 
-    .o_go                   (NFI_go)
+    .o_go                   (ctrl2NFI_go)
 );
 
 // --------------------------------------------------------
@@ -69,7 +68,7 @@ next_field_iter #(
     .clk                    (clk),
     .rst_n                  (rst_n),
 
-    .i_go                   (NFI_go),
+    .i_go                   (ctrl2NFI_go),
     .i_next_cell_state      (NFI_next_cell_state),
     .i_next_nbrs            (NFI_next_nbrs),
 
@@ -189,7 +188,7 @@ field_cfg_rom #(
 
 // --------------------------------------------------------
 
-logic FCL_go;
+logic ctrl2FCL_go;
 logic FCL_is_loading;
 
 field_cfg_loader #(
@@ -199,7 +198,7 @@ field_cfg_loader #(
     .clk                    (clk),
     .rst_n                  (rst_n),
 
-    .i_go                   (FCL_go),
+    .i_go                   (ctrl2FCL_go),
     
     .o_cur_x                (FCL_cell_x_adr),
     .o_cur_y                (FCL_cell_y_adr),
@@ -221,7 +220,7 @@ FCL_controller FCL_controller_inst (
     .i_FCL_allowed          (FCL_allowed),
     .i_is_loading           (FCL_is_loading),
 
-    .o_go                   (FCL_go),
+    .o_go                   (ctrl2FCL_go),
     .o_cur_load_cfg_req     (FCL_cur_load_cfg_req)
 );
 
@@ -245,8 +244,8 @@ vga vga_inst (
 
 // --------------------------------------------------------
 
-assign NFI_allowed = ~NFI_is_simulating & ~FCL_is_loading & FCL_cur_load_cfg_req == NO_REQ; 
-assign FCL_allowed = ~NFI_is_simulating;
+assign NFI_allowed = !NFI_is_simulating && !FCL_is_loading && FCL_cur_load_cfg_req == NO_REQ; 
+assign FCL_allowed = !NFI_is_simulating;
 
 logic FCL_read_cell_cur_cfg;
 always_comb begin
@@ -255,7 +254,7 @@ always_comb begin
     else if (FCL_cur_load_cfg_req == CFG_2)
         FCL_read_cell_cur_cfg = FCL_read_cell_cfg_2;
     else
-        FCL_read_cell_cur_cfg = '0; // REVIEW - is 0 ok if it doesn't matter?
+        FCL_read_cell_cur_cfg = 'x;
 end
 
 always_comb begin

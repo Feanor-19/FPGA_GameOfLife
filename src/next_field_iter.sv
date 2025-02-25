@@ -2,15 +2,14 @@
 
 import defs::field_t;
 
-module next_field_iter #(
+module next_field_iter import defs::NEIGHBOURS_CNT; #(
     parameter FIELD_W,
     parameter FIELD_H,
 
-    localparam X_ADR_SIZE     = $clog2(FIELD_W),
-    localparam Y_ADR_SIZE     = $clog2(FIELD_H),
-    localparam X_MAX_VAL      = X_ADR_SIZE'(FIELD_W-1),
-    localparam Y_MAX_VAL      = Y_ADR_SIZE'(FIELD_H-1),
-    localparam NEIGHBOURS_CNT = 8 //REVIEW
+    localparam X_ADR_SIZE = $clog2(FIELD_W),
+    localparam Y_ADR_SIZE = $clog2(FIELD_H),
+    localparam X_MAX_VAL  = X_ADR_SIZE'(FIELD_W-1),
+    localparam Y_MAX_VAL  = Y_ADR_SIZE'(FIELD_H-1)
 ) (
     input  logic clk,
     input  logic rst_n,
@@ -80,7 +79,7 @@ always_comb begin
         new_state.is_simulating = i_go;
         new_state.cur_x = '0;
         new_state.cur_y = '0;
-    end else if (state.cur_x == X_MAX_VAL & state.cur_y == Y_MAX_VAL) begin
+    end else if (state.cur_x == X_MAX_VAL && state.cur_y == Y_MAX_VAL) begin
         new_state.is_simulating = 0;
         new_state.read_field = ~state.read_field;
         new_state.cur_x = '0;

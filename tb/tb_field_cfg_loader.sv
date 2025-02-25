@@ -9,7 +9,7 @@ localparam FIELD_H = 3;
 localparam X_ADR_SIZE     = $clog2(FIELD_W);
 localparam Y_ADR_SIZE     = $clog2(FIELD_H);
 
-logic clk = 0, rst_n = 1, i_go = 0;
+bit clk = 0, rst_n = 1, i_go = 0;
 logic                  o_is_loading;
 logic [X_ADR_SIZE-1:0] o_cur_x;
 logic [Y_ADR_SIZE-1:0] o_cur_y;

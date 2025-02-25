@@ -17,7 +17,7 @@ module field_cfg_loader #(
     output logic o_is_loading
 );
 
-typedef struct packed {
+typedef struct {
     logic                  is_loading;
     logic [X_ADR_SIZE-1:0] cur_x;
     logic [Y_ADR_SIZE-1:0] cur_y;
@@ -52,7 +52,7 @@ always_comb begin
         new_state.cur_x = next_x;
         new_state.cur_y = next_y;
         
-        if (next_x == '0 & next_y == '0) 
+        if (next_x == '0 && next_y == '0) 
             new_state.is_loading = 0;
         else
             new_state.is_loading = 1;

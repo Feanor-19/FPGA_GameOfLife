@@ -4,7 +4,7 @@ module tb_FCL_controller;
 
 import defs::*;
 
-logic clk = 0, rst_n = 1;
+bit clk = 0, rst_n = 1;
 
 logic          i_cmd_load_cfg_1 = 0;
 logic          i_cmd_load_cfg_2 = 0;

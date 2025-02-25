@@ -7,7 +7,7 @@ import defs_vga::*;
 localparam H_ACTIVE = VGA_H_ACTIVE;
 localparam V_ACTIVE = VGA_V_ACTIVE;
 
-logic clk = 0, rst_n = 1;
+bit clk = 0, rst_n = 1;
 
 logic                        o_draw_active;
 logic [$clog2(H_ACTIVE)-1:0] o_active_x;
