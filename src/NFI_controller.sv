@@ -17,15 +17,22 @@ module NFI_controller #(
 );
 
 logic [CNT_BITS-1:0] cnt;
+logic prev_cmd_tgl_pause;
 logic paused;
 
 assign o_go = (cnt == MAX_CNT);
 
-// FIXME - регистр, "тактируемый" не clk
-always_ff @(posedge i_cmd_toggle_pause, negedge rst_n) begin
+always_ff @(posedge clk, negedge rst_n) begin
+    if (!rst_n)
+        prev_cmd_tgl_pause <= 0;
+    else
+        prev_cmd_tgl_pause <= i_cmd_toggle_pause;
+end
+
+always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n)
         paused <= 0;
-    else if (i_cmd_toggle_pause) 
+    else if (i_cmd_toggle_pause && !prev_cmd_tgl_pause) 
         paused <= ~paused;
 end
 

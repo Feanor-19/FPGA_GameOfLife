@@ -21,6 +21,11 @@ always_comb begin
     end
 end
 
+initial begin
+    if (!(NEIGHBOURS_CNT === 8)) 
+        $error("[STATIC ASSERT FAIL]: the next_cell_state logic requires NEIGHBOURS_CNT == 8");
+end
+
 always_comb begin
     if (i_cell_state) begin
         if (num_alive_nbrs == 2 || num_alive_nbrs == 3)

@@ -8,7 +8,6 @@ module field_ram import defs::NEIGHBOURS_CNT; #(
     localparam Y_ADR_SIZE = $clog2(FIELD_H)
 ) (
     input  logic                      clk,
-    input  logic                      rst_n, 
 
     input  logic [X_ADR_SIZE-1:0]     i_cell_x_adr_prw1, // port 1, read (with nbrs)/write
     input  logic [Y_ADR_SIZE-1:0]     i_cell_y_adr_prw1, // port 1, read (with nbrs)/write 
@@ -25,7 +24,7 @@ module field_ram import defs::NEIGHBOURS_CNT; #(
     output logic                      o_cell_state_pr2
 );
 
-logic [FIELD_H-1:0] [FIELD_W-1:0] field;
+logic field [FIELD_H-1:0] [FIELD_W-1:0];
 
 logic [X_ADR_SIZE-1:0] nbrs_x_adr [NEIGHBOURS_CNT];
 logic [Y_ADR_SIZE-1:0] nbrs_y_adr [NEIGHBOURS_CNT];
@@ -51,10 +50,8 @@ always_comb begin
         o_nbrs_pr1[i] = nbrs_rlvnt[i] ? field[nbrs_y_adr[i]][nbrs_x_adr[i]] : 0; 
 end
 
-always_ff @(posedge clk, negedge rst_n) begin
-    if (!rst_n)
-        field <= '0;
-    else if (i_w_en_p1)
+always_ff @(posedge clk) begin
+    if (i_w_en_p1)
         field[i_cell_y_adr_prw1][i_cell_x_adr_prw1] <= i_new_cell_state_p1;
 end
 

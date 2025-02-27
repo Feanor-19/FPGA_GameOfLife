@@ -4,18 +4,50 @@ module tb_FCL_controller;
 
 import defs::*;
 
+localparam FIELD_W = 4;
+localparam FIELD_H = 3;
+
+localparam X_ADR_SIZE = $clog2(FIELD_W);
+localparam Y_ADR_SIZE = $clog2(FIELD_H);
+
 bit clk = 0, rst_n = 1;
 
-logic          i_cmd_load_cfg_1 = 0;
-logic          i_cmd_load_cfg_2 = 0;
+logic i_cmd_load_cfg_1 = 0;
+logic i_cmd_load_cfg_2 = 0;
+logic i_FCL_allowed    = 1;
 
-logic          i_FCL_allowed    = 0;
-logic          i_is_loading     = 0; 
+logic is_loading; 
+logic go;
 
-logic          o_go;
-load_cfg_req_t o_cur_load_cfg_req;
+load_cfg_req_t         o_cur_load_cfg_req;
+logic [X_ADR_SIZE-1:0] o_FCL_cur_x;
+logic [Y_ADR_SIZE-1:0] o_FCL_cur_y;
 
-FCL_controller dut_inst (.*);
+FCL_controller dut_inst (
+    .clk                (clk),
+    .rst_n              (rst_n),
+
+    .i_cmd_load_cfg_1   (i_cmd_load_cfg_1),
+    .i_cmd_load_cfg_2   (i_cmd_load_cfg_2),
+    .i_FCL_allowed      (i_FCL_allowed),
+    .i_is_loading       (is_loading),
+  
+    .o_go               (go),
+    .o_cur_load_cfg_req (o_cur_load_cfg_req)
+);
+
+field_cfg_loader #(
+    .FIELD_W            (FIELD_W), 
+    .FIELD_H            (FIELD_H)
+) FCL_ref_inst (
+    .clk                (clk),
+    .rst_n              (rst_n),
+    .i_go               (go),
+
+    .o_cur_x            (o_FCL_cur_x),
+    .o_cur_y            (o_FCL_cur_y),
+    .o_is_loading       (is_loading)
+);
 
 initial $dumpfile("dump.svc");
 
@@ -32,51 +64,42 @@ always @(posedge clk) begin
    $display("cur_state = %s", dut_inst.state.name); 
 end
 
+always begin
+    repeat ($urandom_range(1, 10)) @(posedge clk);
+    if (!is_loading) i_FCL_allowed <= ~i_FCL_allowed;
+end
+
+always begin
+    repeat ($urandom_range(20, 50)) #1;
+    i_cmd_load_cfg_1 <= ~i_cmd_load_cfg_1;
+end
+
+always begin
+    repeat ($urandom_range(20, 50)) #1;
+    i_cmd_load_cfg_2 <= ~i_cmd_load_cfg_2;
+end
+
 initial begin
     #5;
     rst_n = 0;
     #5;
     rst_n = 1;
 
-    @(posedge clk);
-    `ASSERT(o_cur_load_cfg_req === NO_REQ, "clc_req wrong after rst");
-    `ASSERT(o_go === 0, "o_go wrong after rst");
-
-    #1 i_cmd_load_cfg_1 = 1;
+    $monitor(o_cur_load_cfg_req, o_FCL_cur_x, o_FCL_cur_y);
 
     @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    i_FCL_allowed = 1;
-
-    #1;
-    `ASSERT(o_cur_load_cfg_req === CFG_1, "clc_req wrong 1");
-    `ASSERT(o_go === 1, "o_go not high");
-
-    i_is_loading = 1;
+    // mem_init should start
+    `ASSERT(o_cur_load_cfg_req === MEM_INIT, "clc_req wrong after rst");
+    `ASSERT(go === 1, "o_go wrong after rst");
 
     @(posedge clk);
-    #1;
-    `ASSERT(o_cur_load_cfg_req === CFG_1, "clc_req wrong 2");
-    `ASSERT(o_go === 0, "o_go not low");
-    
-    #1 i_cmd_load_cfg_1 = 0; // supposing button clicking lasts a few click posedges
-    
-    @(posedge clk);
-    #1;
-    `ASSERT(o_cur_load_cfg_req === CFG_1, "clc_req wrong 3");
-    `ASSERT(o_go === 0, "o_go not low");
 
+    wait(!is_loading);
     @(posedge clk);
-    i_is_loading = 0;
-
     @(posedge clk);
-    #1;
-    `ASSERT(o_cur_load_cfg_req === NO_REQ, "clc_req wrong 4");
-    `ASSERT(o_go === 0, "o_go not low");
+    `ASSERT(o_cur_load_cfg_req === NO_REQ, "clc_req wrong after done loading");
 
-    #100;
-    $display("[PASS]");
+    #1000;
     $finish;
 end
 

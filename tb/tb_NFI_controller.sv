@@ -27,7 +27,7 @@ always begin
 end
 
 always begin
-    repeat ($urandom_range(7, 50)) #1;
+    repeat ($urandom_range(20, 50)) #1;
     i_cmd_toggle_pause <= ~i_cmd_toggle_pause;
 end
 

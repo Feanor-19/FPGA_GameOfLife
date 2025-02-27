@@ -33,7 +33,7 @@ module next_field_iter import defs::NEIGHBOURS_CNT; #(
 
 import defs::*;
 
-typedef struct packed {
+typedef struct {
     field_t                    read_field;
     logic                      is_simulating;
     logic [X_ADR_SIZE-1:0]     cur_x;

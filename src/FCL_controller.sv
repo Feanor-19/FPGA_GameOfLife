@@ -32,11 +32,10 @@ always_comb begin
 
     unique case (state)
         DEFAULT: begin
-            case (1'b1)
-                i_cmd_load_cfg_1: new_load_cfg_req = CFG_1;
-                i_cmd_load_cfg_2: new_load_cfg_req = CFG_2;
-                default:          new_load_cfg_req = NO_REQ;
-            endcase
+            if      (i_cmd_load_cfg_1)
+                new_load_cfg_req = CFG_1;
+            else if (i_cmd_load_cfg_2)
+                new_load_cfg_req = CFG_2;
             
             if (cur_load_cfg_req != NO_REQ && i_FCL_allowed)
                 new_state = START_LOADING;
@@ -57,8 +56,8 @@ assign o_go = (state == START_LOADING);
 
 always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin
-        state            <= DEFAULT;
-        cur_load_cfg_req <= NO_REQ;
+        state            <= START_LOADING;
+        cur_load_cfg_req <= MEM_INIT;
     end
     else begin
         state            <= new_state;

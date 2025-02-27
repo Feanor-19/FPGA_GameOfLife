@@ -19,15 +19,18 @@ module top import defs_vga::*; (
 
 import defs::*;
 
-localparam FIELD_W        = VGA_H_ACTIVE/2;
-localparam FIELD_H        = VGA_V_ACTIVE/2;
-localparam NFI_CNT        = (VGA_H_ACTIVE*VGA_V_ACTIVE) * 10;
+localparam FIELD_W = VGA_H_ACTIVE/2;
+localparam FIELD_H = VGA_V_ACTIVE/2;
+localparam NFI_CNT = (VGA_H_ACTIVE*VGA_V_ACTIVE) * 10;
 
 localparam logic[15:0] COLOR_ALIVE = {16{1'b1}};
 localparam logic[15:0] COLOR_DEAD  = '0;
 
-localparam X_ADR_SIZE     = $clog2(FIELD_W);
-localparam Y_ADR_SIZE     = $clog2(FIELD_H);
+localparam X_ADR_SIZE = $clog2(FIELD_W);
+localparam Y_ADR_SIZE = $clog2(FIELD_H);
+
+localparam int SCREEN_CELL_X_SIZE = VGA_H_ACTIVE / FIELD_W;
+localparam int SCREEN_CELL_Y_SIZE = VGA_V_ACTIVE / FIELD_H;
 
 // --------------------------------------------------------
 
@@ -249,20 +252,20 @@ assign FCL_allowed = !NFI_is_simulating;
 
 logic FCL_read_cell_cur_cfg;
 always_comb begin
-    if      (FCL_cur_load_cfg_req == CFG_1)
-        FCL_read_cell_cur_cfg = FCL_read_cell_cfg_1;
-    else if (FCL_cur_load_cfg_req == CFG_2)
-        FCL_read_cell_cur_cfg = FCL_read_cell_cfg_2;
-    else
-        FCL_read_cell_cur_cfg = 'x;
+    case (FCL_cur_load_cfg_req)
+        MEM_INIT:   FCL_read_cell_cur_cfg = '0;
+        CFG_1:      FCL_read_cell_cur_cfg = FCL_read_cell_cfg_1;
+        CFG_2:      FCL_read_cell_cur_cfg = FCL_read_cell_cfg_2; 
+        default:    FCL_read_cell_cur_cfg = 'x;
+    endcase
 end
 
 always_comb begin
-    field_A_x_adr_pr2 = VGA_active_x;
-    field_A_y_adr_pr2 = VGA_active_y;
+    field_A_x_adr_pr2 = VGA_active_x / SCREEN_CELL_X_SIZE;
+    field_A_y_adr_pr2 = VGA_active_y / SCREEN_CELL_Y_SIZE;
 
-    field_B_x_adr_pr2 = VGA_active_x;
-    field_B_y_adr_pr2 = VGA_active_y;
+    field_B_x_adr_pr2 = VGA_active_x / SCREEN_CELL_X_SIZE;
+    field_B_y_adr_pr2 = VGA_active_y / SCREEN_CELL_Y_SIZE;
 
     if (NFI_cur_read_field == FIELD_A) begin
         field_A_w_en_p1 = FCL_is_loading;
