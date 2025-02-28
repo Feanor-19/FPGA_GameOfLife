@@ -12,9 +12,9 @@ localparam VGA_V_FRONT  = 10;
 localparam VGA_V_SYNC   = 2;
 localparam VGA_V_BACK   = 33;
 
-localparam BITS_R       = 5;
-localparam BITS_G       = 6;
-localparam BITS_B       = 5;
-localparam TOTAL_BITS   = BITS_R + BITS_G + BITS_B;
+localparam BITS_R         = 5;
+localparam BITS_G         = 6;
+localparam BITS_B         = 5;
+localparam TOTAL_VGA_BITS = BITS_R + BITS_G + BITS_B;
 
 endpackage

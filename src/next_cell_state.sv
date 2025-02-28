@@ -21,10 +21,7 @@ always_comb begin
     end
 end
 
-initial begin
-    if (!(NEIGHBOURS_CNT === 8)) 
-        $error("[STATIC ASSERT FAIL]: the next_cell_state logic requires NEIGHBOURS_CNT == 8");
-end
+initial `STATIC_ASSERT(NEIGHBOURS_CNT === 8, "next_cell_state logic requires NEIGHBOURS_CNT == 8");
 
 always_comb begin
     if (i_cell_state) begin

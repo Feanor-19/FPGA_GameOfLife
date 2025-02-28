@@ -18,4 +18,6 @@ typedef enum logic [1:0] {
     CFG_2
 } load_cfg_req_t;     
 
+`define STATIC_ASSERT(EXPR, ERR_MSG) assert((EXPR)) else $error("[STATIC ASSERT FAIL]: ", ERR_MSG)
+
 endpackage

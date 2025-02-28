@@ -42,7 +42,10 @@ typedef struct {
     logic [NEIGHBOURS_CNT-1:0] cur_nbrs;
 } state_t;
 
+/* verilator lint_off UNOPTFLAT */ // it isn't a real error, one part of new_state
+                                   // combinationally depends on a different part of new_state
 state_t state, new_state;
+/* verilator lint_on UNOPTFLAT */
 
 next_cell_state next_cell_state_inst (
     .i_nbrs         (state.cur_nbrs),

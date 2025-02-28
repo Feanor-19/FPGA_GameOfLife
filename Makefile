@@ -22,7 +22,7 @@ MAKE_TOP_TB := --top tb_$(MODULE)
 endif
 
 COMPILER := verilator
-COMPILER_FLAGS := --binary --trace-fst -j 0 -Wall --x-assign unique
+COMPILER_FLAGS := --binary --trace-fst -j 0 -Wall --x-assign unique --assert
 
 EXECUTABLE_FLAGS := +verilator+seed+50 +verilator+rand+reset+2
 DUMP_FILE := dump.svc

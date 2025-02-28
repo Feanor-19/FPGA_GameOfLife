@@ -1,7 +1,5 @@
 `timescale 1ns/1ps
 
-// EARLY WIP
-
 module top import defs_vga::*; (
     input  logic                clk,                // tuned for vga
     input  logic                rst_n,
@@ -21,10 +19,10 @@ import defs::*;
 
 localparam FIELD_W = VGA_H_ACTIVE/2;
 localparam FIELD_H = VGA_V_ACTIVE/2;
-localparam NFI_CNT = (VGA_H_ACTIVE*VGA_V_ACTIVE) * 10;
+localparam NFI_CNT = (VGA_H_ACTIVE*VGA_V_ACTIVE) * 2;
 
-localparam logic[15:0] COLOR_ALIVE = {16{1'b1}};
-localparam logic[15:0] COLOR_DEAD  = '0;
+localparam logic[TOTAL_VGA_BITS-1:0] COLOR_ALIVE = {16{1'b1}};
+localparam logic[TOTAL_VGA_BITS-1:0] COLOR_DEAD  = '0;
 
 localparam X_ADR_SIZE = $clog2(FIELD_W);
 localparam Y_ADR_SIZE = $clog2(FIELD_H);
@@ -105,7 +103,6 @@ field_ram #(
     .FIELD_H                (FIELD_H)
 ) field_ram_A_inst (
     .clk                    (clk),
-    .rst_n                  (rst_n),
 
     .i_cell_x_adr_prw1      (field_A_x_adr_prw1),
     .i_cell_y_adr_prw1      (field_A_y_adr_prw1),
@@ -143,7 +140,6 @@ field_ram #(
     .FIELD_H                (FIELD_H)
 ) field_ram_B_inst (
     .clk                    (clk),
-    .rst_n                  (rst_n),
 
     .i_cell_x_adr_prw1      (field_B_x_adr_prw1),
     .i_cell_y_adr_prw1      (field_B_y_adr_prw1),
@@ -211,7 +207,7 @@ field_cfg_loader #(
 // --------------------------------------------------------
 
 logic FCL_allowed;
-logic FCL_cur_load_cfg_req;
+load_cfg_req_t FCL_cur_load_cfg_req;
 
 FCL_controller FCL_controller_inst (
     .clk                    (clk),
@@ -260,12 +256,15 @@ always_comb begin
     endcase
 end
 
-always_comb begin
-    field_A_x_adr_pr2 = VGA_active_x / SCREEN_CELL_X_SIZE;
-    field_A_y_adr_pr2 = VGA_active_y / SCREEN_CELL_Y_SIZE;
+initial `STATIC_ASSERT(SCREEN_CELL_X_SIZE == 2 && SCREEN_CELL_Y_SIZE == 2, 
+                       "current logic requires square cells of size 2");
 
-    field_B_x_adr_pr2 = VGA_active_x / SCREEN_CELL_X_SIZE;
-    field_B_y_adr_pr2 = VGA_active_y / SCREEN_CELL_Y_SIZE;
+always_comb begin
+    field_A_x_adr_pr2 = X_ADR_SIZE'(VGA_active_x >> 1);
+    field_A_y_adr_pr2 = Y_ADR_SIZE'(VGA_active_y >> 1);
+
+    field_B_x_adr_pr2 = X_ADR_SIZE'(VGA_active_x >> 1);
+    field_B_y_adr_pr2 = Y_ADR_SIZE'(VGA_active_y >> 1);
 
     if (NFI_cur_read_field == FIELD_A) begin
         field_A_w_en_p1 = FCL_is_loading;

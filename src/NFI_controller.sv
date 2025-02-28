@@ -20,7 +20,7 @@ logic [CNT_BITS-1:0] cnt;
 logic prev_cmd_tgl_pause;
 logic paused;
 
-assign o_go = (cnt == MAX_CNT);
+assign o_go = (cnt == CNT_BITS'(MAX_CNT));
 
 always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n)
@@ -40,9 +40,9 @@ always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin
         cnt <= 0;
     end else begin
-        if (cnt != MAX_CNT && !paused && i_NFI_allowed)
+        if (cnt != CNT_BITS'(MAX_CNT) && !paused && i_NFI_allowed)
             cnt <= cnt + 1;
-        else if (cnt == MAX_CNT)
+        else if (cnt == CNT_BITS'(MAX_CNT))
             cnt <= 0;
     end
 end
