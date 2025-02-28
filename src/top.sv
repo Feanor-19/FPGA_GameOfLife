@@ -15,6 +15,15 @@ module top import defs_vga::*; (
     output logic [BITS_B-1:0]   o_vga_b
 );
 
+initial begin
+    if ($test$plusargs("trace") != 0) begin
+        $display("[%0t] Tracing to vlt_dump.svc...\n", $time);
+        $dumpfile("dump.svc");
+        $dumpvars(0);
+    end
+    $display("[%0t] Model running...\n", $time);
+end
+
 import defs::*;
 
 localparam FIELD_W = VGA_H_ACTIVE/2;

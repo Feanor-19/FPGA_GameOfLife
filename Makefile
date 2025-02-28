@@ -6,7 +6,7 @@ endif
 
 MODULE:=$(M)
 
-EXECUTABLE := ./obj_dir/Vtb_$(MODULE)
+OBJ_DIR := obj_dir
 
 # always compile all
 SRC   := $(wildcard src/*.sv)
@@ -24,9 +24,9 @@ endif
 COMPILER := verilator
 COMPILER_FLAGS := --binary --trace-fst -j 0 -Wall --x-assign unique --assert
 
+EXECUTABLE := ./obj_dir/Vtb_$(MODULE)
 EXECUTABLE_FLAGS := +verilator+seed+50 +verilator+rand+reset+2
 DUMP_FILE := dump.svc
-OBJ_DIR := obj_dir
 
 ALL_SRCS :=  $(SRC) $(TB) $(ASRTS)
 
