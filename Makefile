@@ -30,10 +30,11 @@ DUMP_FILE := dump.svc
 
 ALL_SRCS :=  $(SRC) $(TB) $(ASRTS)
 
-.PHONY: run waves info
+.PHONY: run waves info sim_cpp
 
 info:
 	@echo "Please, use 'make run M=*your module name* to compile corresponding tb."
+	@echo "Or use 'make sim_cpp' to compile and run cpp simulation."
 	@echo "Current targets to compile:" $(ALL_SRCS)
 	@echo "MAKE_TOP_TB:" $(MAKE_TOP_TB)
 
@@ -45,9 +46,13 @@ $(EXECUTABLE): $(ALL_SRCS)
 
 $(TB) $(ASRTS): ;
 
+sim_cpp:
+	echo "sim_cpp aaaa" $(TRACE)
+	$(MAKE) -j -C . -f Makefile_sim_cpp.mk
+
 waves:
 	@gtkwave $(DUMP_FILE)
 
 clean:
 	rm -rf ./$(OBJ_DIR)/
-	rm -f $(DUMP_FILE)
+	rm -f $(DUMP_FILE) $(DUMP_FILE).hier
