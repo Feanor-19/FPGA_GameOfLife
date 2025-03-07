@@ -23,8 +23,6 @@ end
 
 initial forever #5 clk = ~clk; 
 
-`define ASSERT(EXPR, ERR_MSG) if (!(EXPR)) $error("[FAIL]: ", ERR_MSG)
-
 initial begin
     #5;
     rst_n = 0;
@@ -42,23 +40,21 @@ initial begin
             for (int x = 0; x < FIELD_W; x++) begin
                 @(posedge clk);
 
-                `ASSERT(X_ADR_SIZE'(x) === o_cur_x, "o_cur_x wrong");
-                `ASSERT(Y_ADR_SIZE'(y) === o_cur_y, "o_cur_y wrong");
+                `ASSERT_IMM(X_ADR_SIZE'(x) === o_cur_x, "o_cur_x wrong");
+                `ASSERT_IMM(Y_ADR_SIZE'(y) === o_cur_y, "o_cur_y wrong");
 
-                `ASSERT(o_is_loading, "is_loading not high");
+                `ASSERT_IMM(o_is_loading, "is_loading not high");
             end
         end
 
         @(posedge clk);
 
-        `ASSERT(!o_is_loading, "is_loading not low");
+        `ASSERT_IMM(!o_is_loading, "is_loading not low");
     end
 
     #10;
     $display("[PASS]");
     $finish;
 end
-
-`undef ASSERT
 
 endmodule

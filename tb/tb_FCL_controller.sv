@@ -58,8 +58,6 @@ end
 
 initial forever #5 clk = ~clk; 
 
-`define ASSERT(EXPR, ERR_MSG) if (!(EXPR)) $error("[FAIL]: ", ERR_MSG)
-
 always @(posedge clk) begin
    $display("cur_state = %s", dut_inst.state.name); 
 end
@@ -85,24 +83,22 @@ initial begin
     #5;
     rst_n = 1;
 
-    $monitor(o_cur_load_cfg_req, o_FCL_cur_x, o_FCL_cur_y);
+    $display(o_cur_load_cfg_req, o_FCL_cur_x, o_FCL_cur_y);
 
     @(posedge clk);
     // mem_init should start
-    `ASSERT(o_cur_load_cfg_req === MEM_INIT, "clc_req wrong after rst");
-    `ASSERT(go === 1, "o_go wrong after rst");
+    `ASSERT_IMM(o_cur_load_cfg_req === MEM_INIT, "clc_req wrong after rst");
+    `ASSERT_IMM(go === 1, "o_go wrong after rst");
 
     @(posedge clk);
 
     wait(!is_loading);
     @(posedge clk);
     @(posedge clk);
-    `ASSERT(o_cur_load_cfg_req === NO_REQ, "clc_req wrong after done loading");
+    `ASSERT_IMM(o_cur_load_cfg_req === NO_REQ, "clc_req wrong after done loading");
 
-    #1000;
+    #10000;
     $finish;
 end
-
-`undef ASSERT
 
 endmodule

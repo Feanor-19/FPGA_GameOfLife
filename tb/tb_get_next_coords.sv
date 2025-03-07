@@ -18,8 +18,6 @@ get_next_coords #(.FIELD_W(FIELD_W), .FIELD_H(FIELD_H)) dut (.*);
 
 int next_x, next_y;
 
-`define ASSERT(EXPR, ERR_MSG) if (!(EXPR)) $error("[FAIL]: ", ERR_MSG)
-
 initial begin
     $dumpfile("dump.svc");
 
@@ -36,15 +34,13 @@ initial begin
             $display("x=%d, y=%d, i_x=%d, i_y=%d, o_next_x=%d, o_next_y=%d",
                           x, y, i_x, i_y, o_next_x, o_next_y);
                 
-            `ASSERT(next_x === int'(o_next_x), "o_next_x wrong");
-            `ASSERT(next_y === int'(o_next_y), "o_next_y wrong");
+            `ASSERT_IMM(next_x === int'(o_next_x), "o_next_x wrong");
+            `ASSERT_IMM(next_y === int'(o_next_y), "o_next_y wrong");
         end
     end
 
     #1 $display("[PASS]"); 
     $finish;
 end
-
-`undef ASSERT
 
 endmodule

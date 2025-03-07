@@ -20,4 +20,12 @@ typedef enum logic [1:0] {
 
 `define STATIC_ASSERT(EXPR, ERR_MSG) assert((EXPR)) else $error("[STATIC ASSERT FAIL]: ", ERR_MSG)
 
+`define ASSERT_IMM(EXPR, ERR_MSG) assert ((EXPR)) else $error("[IMMEDIATE ASSERT FAIL]: ", ERR_MSG)
+
+`define ASSERT(NAME, EXPR)                  \
+    ERROR_``NAME``_INVLD: assert property ( \
+        @(posedge clk) disable iff (!rdy)   \
+        EXPR                                \
+    ) else $error("[ASSERT PROPERTY FAIL]")
+
 endpackage

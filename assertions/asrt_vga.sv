@@ -11,6 +11,8 @@ module asrt_vga import defs_vga::*; (
     input logic                            o_v_sync
 );
 
+import defs::*;
+
 localparam H_TOTAL = VGA_H_ACTIVE + VGA_H_FRONT + VGA_H_SYNC + VGA_H_BACK;
 localparam V_TOTAL = VGA_V_ACTIVE + VGA_V_FRONT + VGA_V_SYNC + VGA_V_BACK;
 
@@ -42,12 +44,6 @@ always @(posedge clk, negedge rst_n) begin
         ref_y <= new_ref_y;
     end
 end
-
-`define ASSERT(NAME, EXPR)      \
-    ERROR_``NAME``_INVLD: assert property ( \
-        @(posedge clk) disable iff (!rdy) \
-        EXPR        \
-    ) else $error("[ASSERT FAIL]")
 
 `ASSERT(DRAW_ACTIVE, o_draw_active |-> (o_active_x < VGA_H_ACTIVE) && (o_active_y < VGA_V_ACTIVE));
 

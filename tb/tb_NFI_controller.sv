@@ -37,9 +37,9 @@ initial begin
     #5;
     rst_n = 1;
 
-    $monitor(o_go);
+    $display(o_go);
 
-    #1000;
+    #10000;
     $finish;
 end
 

@@ -33,8 +33,6 @@ end
 
 initial forever #5 clk = ~clk; 
 
-`define ASSERT(EXPR, ERR_MSG) if (!(EXPR)) $error("[FAIL]: ", ERR_MSG)
-
 field_t cur_read_field = FIELD_A; // TODO - разобраться, почему нельзя объявить внутри initial ниже
 int next_x, next_y;
 
@@ -71,18 +69,18 @@ initial begin
                 $display("x=%d, y=%d, o_cur_x=%d, o_cur_y=%d, o_next_x=%d, o_next_y=%d",
                           x, y, o_cur_x, o_cur_y, o_next_x, o_next_y);
                 
-                `ASSERT(X_ADR_SIZE'(x) === o_cur_x, "o_cur_x wrong");
-                `ASSERT(Y_ADR_SIZE'(y) === o_cur_y, "o_cur_y wrong");
+                `ASSERT_IMM(X_ADR_SIZE'(x) === o_cur_x, "o_cur_x wrong");
+                `ASSERT_IMM(Y_ADR_SIZE'(y) === o_cur_y, "o_cur_y wrong");
 
                 next_x = ((x == FIELD_W-1) ? 0 : x+1);
                 next_y = ((next_x != 0) ? y : ( (y == FIELD_H-1) ? 0 : y+1 )); 
 
-                `ASSERT(next_x === int'(o_next_x), "o_next_x wrong");
-                `ASSERT(next_y === int'(o_next_y), "o_next_y wrong");
+                `ASSERT_IMM(next_x === int'(o_next_x), "o_next_x wrong");
+                `ASSERT_IMM(next_y === int'(o_next_y), "o_next_y wrong");
 
-                `ASSERT(o_is_simulating, "is_sim not high");
+                `ASSERT_IMM(o_is_simulating, "is_sim not high");
 
-                `ASSERT(o_new_cur_cell_state === ref_new_cell_state, "mock new_cell_state wrong");
+                `ASSERT_IMM(o_new_cur_cell_state === ref_new_cell_state, "mock new_cell_state wrong");
 
                 prev_cell_state = i_next_cell_state;
                 prev_nbrs       = i_next_nbrs;
@@ -92,15 +90,13 @@ initial begin
         cur_read_field = ~cur_read_field;
         @(posedge clk);
 
-        `ASSERT(!o_is_simulating, "is_sim not low");
-        `ASSERT(cur_read_field === o_cur_read_field, "cur_read_field wrong");
+        `ASSERT_IMM(!o_is_simulating, "is_sim not low");
+        `ASSERT_IMM(cur_read_field === o_cur_read_field, "cur_read_field wrong");
     end
 
     #10;
     $display("[PASS]");
     $finish;
 end
-
-`undef ASSERT
 
 endmodule
