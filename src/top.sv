@@ -269,11 +269,11 @@ initial `STATIC_ASSERT(SCREEN_CELL_X_SIZE == 2 && SCREEN_CELL_Y_SIZE == 2,
                        "current logic requires square cells of size 2");
 
 always_comb begin
-    field_A_x_adr_pr2 = X_ADR_SIZE'(VGA_active_x >> 1);
-    field_A_y_adr_pr2 = Y_ADR_SIZE'(VGA_active_y >> 1);
+    field_A_x_adr_pr2 = (VGA_draw_active) ? X_ADR_SIZE'(VGA_active_x >> 1) : '0;
+    field_A_y_adr_pr2 = (VGA_draw_active) ? Y_ADR_SIZE'(VGA_active_y >> 1) : '0;
 
-    field_B_x_adr_pr2 = X_ADR_SIZE'(VGA_active_x >> 1);
-    field_B_y_adr_pr2 = Y_ADR_SIZE'(VGA_active_y >> 1);
+    field_B_x_adr_pr2 = (VGA_draw_active) ? X_ADR_SIZE'(VGA_active_x >> 1) : '0;
+    field_B_y_adr_pr2 = (VGA_draw_active) ? Y_ADR_SIZE'(VGA_active_y >> 1) : '0;
 
     if (NFI_cur_read_field == FIELD_A) begin
         field_A_w_en_p1 = FCL_is_loading;

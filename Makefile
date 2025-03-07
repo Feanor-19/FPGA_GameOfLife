@@ -9,13 +9,13 @@ MODULE:=$(M)
 OBJ_DIR := obj_dir
 
 # always compile all
-SRC   := $(wildcard src/*.sv)
+SRC_RTL := $(wildcard src/*.sv)
 
 # compile only the one needed and make it top
-TB 	  := $(wildcard tb/tb_$(MODULE).sv)
+TB := $(wildcard tb/tb_$(MODULE).sv)
 
 # always compile all
-ASRTS := $(wildcard assertions/asrt_*.sv assertions/binds_asrt.sv)
+ASRTS := $(wildcard assertions/asrt_*.sv assertions/binds.sv)
 
 ifeq ($(words $(TB)),1)
 MAKE_TOP_TB := --top tb_$(MODULE)
@@ -28,7 +28,7 @@ EXECUTABLE := ./obj_dir/Vtb_$(MODULE)
 EXECUTABLE_FLAGS := +verilator+seed+50 +verilator+rand+reset+2
 DUMP_FILE := dump.svc
 
-ALL_SRCS :=  $(SRC) $(TB) $(ASRTS)
+ALL_SRCS :=  $(SRC_RTL) $(TB) $(ASRTS)
 
 .PHONY: run waves info sim_cpp
 
@@ -47,7 +47,6 @@ $(EXECUTABLE): $(ALL_SRCS)
 $(TB) $(ASRTS): ;
 
 sim_cpp:
-	echo "sim_cpp aaaa" $(TRACE)
 	$(MAKE) -j -C . -f Makefile_sim_cpp.mk
 
 waves:

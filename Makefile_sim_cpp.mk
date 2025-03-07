@@ -6,7 +6,7 @@ SRC_RTL := $(wildcard src/*.sv)
 
 SRC_CPP := $(wildcard sim_cpp/*.cpp)
 
-ASRTS := $(wildcard assertions/asrt_*.sv assertions/binds_asrt.sv)
+ASRTS := $(wildcard assertions/asrt_*.sv assertions/binds.sv)
 
 COMPILER := verilator
 COMPILER_FLAGS := --cc --exe --trace-fst -j 0 -Wall --x-assign fast --assert

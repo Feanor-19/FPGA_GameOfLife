@@ -32,7 +32,7 @@ initial begin
     #5;
     rst_n = 1;
     
-    $monitor(o_draw_active, o_active_x, o_active_y, o_h_sync, o_v_sync);
+    $display(o_draw_active, o_active_x, o_active_y, o_h_sync, o_v_sync);
 
     #100000;
     $finish;

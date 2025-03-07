@@ -2,6 +2,7 @@
 
 package defs_vga;
 
+// verilator lint_off UNUSEDPARAM
 localparam VGA_H_ACTIVE = 640;
 localparam VGA_H_FRONT  = 16;
 localparam VGA_H_SYNC   = 96;
@@ -16,5 +17,6 @@ localparam BITS_R         = 5;
 localparam BITS_G         = 6;
 localparam BITS_B         = 5;
 localparam TOTAL_VGA_BITS = BITS_R + BITS_G + BITS_B;
+// verilator lint_on UNUSEDPARAM
 
 endpackage
